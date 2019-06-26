@@ -1,0 +1,22 @@
+{
+  "name": "recipe-book-v5-parse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nirch/recipe-book-v5-parse.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nirch/recipe-book-v5-parse/issues"
+  },
+  "homepage": "https://github.com/nirch/recipe-book-v5-parse#readme",
+  "dependencies": {
+    "parse": "^2.4.0"
+  }
+}

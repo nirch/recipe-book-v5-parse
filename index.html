@@ -17,6 +17,18 @@
     <!-- ng image with preview -->
     <script src="js/ng-image-input-with-preview.js"></script>
 
+
+    <!-- Parse (Back4App) -->
+    <script src="node_modules/parse/dist/parse.min.js"></script>
+    <script>
+      Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+      Parse.initialize(
+        'bPiipOdH63i5L5i8CnVJNv72hwa8ZLWsvMDxUuMN', // This is your Application ID
+        'tBsVpAtPAzqy8oJ6cfwj51lWrApdJt5I0KmGkOYo' // This is your Javascript key
+      );
+    </script>
+
+
     <!-- adding all my scripts after 3rd party scripts -->
     <script src="app/app.js"></script>
     <script src="app/navbar/navbarDir.js"></script>
