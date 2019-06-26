@@ -8,7 +8,12 @@ app.controller("newRecipeCtrl", function($scope, recipeSrv, $log) {
     $scope.addRecipe = function() {
        recipeSrv.addRecipe($scope.name, $scope.desc, $scope.img.src).then(function(newRecipe) {
             $log.info("new recipe added: " + JSON.stringify(newRecipe));
-            $("#modelId").modal('hide')
+
+            // Throwing an event for the recipeCtrl that a new recipe was added
+            $scope.$emit("recipeAdded");
+
+            // Closing the modal
+            $("#modelId").modal('hide');
        });
     }
 

@@ -21,9 +21,12 @@ app.factory("recipeSrv", function($q, $http, userSrv) {
 
         var recipes = [];
 
-        const RecipeParse = Parse.Object.extend('Recipe');
-        const query = new Parse.Query(RecipeParse);
+        // Building a query
+        var RecipeParse = Parse.Object.extend('Recipe');
+        var query = new Parse.Query(RecipeParse);
         query.equalTo("userId", Parse.User.current());
+
+        // Executing the query
         query.find().then((results) => {
           console.log('Recipe found', results);
           for (let index = 0; index < results.length; index++) {
@@ -35,53 +38,48 @@ app.factory("recipeSrv", function($q, $http, userSrv) {
           async.reject(error);
         });
 
-
-        // var activeUserId = userSrv.getActiveUser().id;
-
-        // if (recipes[activeUserId]) {
-        //     async.resolve(recipes[activeUserId]);
-        // } else {
-        //     recipes[activeUserId] = []; // inserting an empty array to the user key in the object
-        //     $http.get("app/model/data/recipes.json").then(function(res) {
-
-        //         for (var i = 0; i < res.data.length; i++) {
-        //             if (res.data[i].userId === activeUserId) {
-        //                 recipes[activeUserId].push(new Recipe(res.data[i]));
-        //             }
-        //         }
-
-        //         nextRecipeId = res.data.length;
-        //         async.resolve(recipes[activeUserId]);
-        //     }, function(err) {
-        //         // setting the recipes for the active user to undefined since
-        //         // we got an error and we want the next call to getActiveUserRecipes to try again
-        //         recipes[activeUserId] = undefined;
-        //         async.reject(err);
-        //     });
-        // }
-
         return async.promise;
     }
 
     function addRecipe(name, desc, img) {
         var async = $q.defer();
 
-        var activeUserId = userSrv.getActiveUser().id;
+        // Preparing the new parse recipe object to save
+        var RecipeParse = Parse.Object.extend('Recipe');
+        var newRecipe = new RecipeParse();
+        newRecipe.set('name', name);
+        newRecipe.set('desc', desc);
+        newRecipe.set('image', new Parse.File(name + ".jpg", { base64: img }));
+        newRecipe.set('userId', Parse.User.current());
 
-        // Creating an object elelment to pass to the contructor
-        var plainRecipe = {
-            "id": nextRecipeId,
-            "name": name,
-            "desc": desc,
-            "img": img
-        }
-        var newRecipe = new Recipe(plainRecipe);
-        recipes[activeUserId].push(newRecipe);
+        // Actual saving the new recipe in Parse
+        newRecipe.save().then(
+          function (result) {
+            console.log('Recipe created', result);
+            async.resolve(new Recipe(result));
+          },
+          function (error) {
+            console.error('Error while creating Recipe: ', error);
+            async.reject(error);
+          }
+        );
 
-        // preparing the id for the next addition
-        ++nextRecipeId;
+        // var activeUserId = userSrv.getActiveUser().id;
 
-        async.resolve(newRecipe);
+        // // Creating an object elelment to pass to the contructor
+        // var plainRecipe = {
+        //     "id": nextRecipeId,
+        //     "name": name,
+        //     "desc": desc,
+        //     "img": img
+        // }
+        // var newRecipe = new Recipe(plainRecipe);
+        // recipes[activeUserId].push(newRecipe);
+
+        // // preparing the id for the next addition
+        // ++nextRecipeId;
+
+        // async.resolve(newRecipe);
 
         return async.promise;
     }

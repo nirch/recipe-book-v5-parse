@@ -12,5 +12,11 @@ app.controller("recipesCtrl", function($scope, userSrv, $location, recipeSrv) {
         $scope.recipes = recipes;
     });
    
+    // Handling an event that a new recipe was added => fetching all the recipes
+    $scope.$on("recipeAdded", function() {
+        recipeSrv.getActiveUserRecipes().then(function(recipes) {
+            $scope.recipes = recipes;
+        });    
+    })
 
 })
