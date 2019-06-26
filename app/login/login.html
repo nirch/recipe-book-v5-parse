@@ -1,0 +1,18 @@
+<div class="login">
+    <h1>Login to Recipe Book</h1>
+    <p>or <a href="#!/signup">create an account</a></p>
+    <div class="alert alert-danger" role="alert" ng-show="invalidLogin">
+        <strong>Invalid Login!</strong> incorrect email or password
+    </div>
+    <form>
+        <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" class="form-control" id="email" ng-model="email" placeholder="Enter email address">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd" ng-model="pwd" placeholder="Enter password">
+        </div>
+        <button type="button" class="btn btn-success btn-block" ng-click="login()">Login</button>
+    </form>
+</div>
