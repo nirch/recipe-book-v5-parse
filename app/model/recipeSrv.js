@@ -8,40 +8,57 @@ app.factory("recipeSrv", function($q, $http, userSrv) {
 
     // New ES6 syntax for creating a constructor
     class Recipe {
-        constructor(plainRecipe) {
-            this.id = plainRecipe.id;
-            this.name = plainRecipe.name;
-            this.desc = plainRecipe.desc;
-            this.img = plainRecipe.img;
+        constructor(parseRecipe) {
+            this.id = parseRecipe.id;
+            this.name = parseRecipe.get("name");
+            this.desc = parseRecipe.get("desc");
+            this.img = parseRecipe.get("image")._url;
         }
     }
 
     function getActiveUserRecipes() {
         var async = $q.defer();
 
-        var activeUserId = userSrv.getActiveUser().id;
+        var recipes = [];
 
-        if (recipes[activeUserId]) {
-            async.resolve(recipes[activeUserId]);
-        } else {
-            recipes[activeUserId] = []; // inserting an empty array to the user key in the object
-            $http.get("app/model/data/recipes.json").then(function(res) {
+        const RecipeParse = Parse.Object.extend('Recipe');
+        const query = new Parse.Query(RecipeParse);
+        query.equalTo("userId", Parse.User.current());
+        query.find().then((results) => {
+          console.log('Recipe found', results);
+          for (let index = 0; index < results.length; index++) {
+              recipes.push(new Recipe(results[index]));
+          }
+          async.resolve(recipes);
+        }, (error) => {
+          console.error('Error while fetching Recipe', error);
+          async.reject(error);
+        });
 
-                for (var i = 0; i < res.data.length; i++) {
-                    if (res.data[i].userId === activeUserId) {
-                        recipes[activeUserId].push(new Recipe(res.data[i]));
-                    }
-                }
 
-                nextRecipeId = res.data.length;
-                async.resolve(recipes[activeUserId]);
-            }, function(err) {
-                // setting the recipes for the active user to undefined since
-                // we got an error and we want the next call to getActiveUserRecipes to try again
-                recipes[activeUserId] = undefined;
-                async.reject(err);
-            });
-        }
+        // var activeUserId = userSrv.getActiveUser().id;
+
+        // if (recipes[activeUserId]) {
+        //     async.resolve(recipes[activeUserId]);
+        // } else {
+        //     recipes[activeUserId] = []; // inserting an empty array to the user key in the object
+        //     $http.get("app/model/data/recipes.json").then(function(res) {
+
+        //         for (var i = 0; i < res.data.length; i++) {
+        //             if (res.data[i].userId === activeUserId) {
+        //                 recipes[activeUserId].push(new Recipe(res.data[i]));
+        //             }
+        //         }
+
+        //         nextRecipeId = res.data.length;
+        //         async.resolve(recipes[activeUserId]);
+        //     }, function(err) {
+        //         // setting the recipes for the active user to undefined since
+        //         // we got an error and we want the next call to getActiveUserRecipes to try again
+        //         recipes[activeUserId] = undefined;
+        //         async.reject(err);
+        //     });
+        // }
 
         return async.promise;
     }
