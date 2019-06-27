@@ -1,5 +1,5 @@
 
-var app = angular.module("recipeBookApp", ["ngRoute", "ngImageInputWithPreview"]);
+var app = angular.module("recipeBookApp", ["ngRoute", "ngImageInputWithPreview", "ngAnimate", "ngTouch", "ui.bootstrap"]);
 
 app.config(function($routeProvider) {
     $routeProvider
