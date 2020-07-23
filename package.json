@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/nirch/recipe-book-v5-parse#readme",
   "dependencies": {
-    "parse": "^2.4.0"
+    "parse": "^2.10.0"
   }
 }
